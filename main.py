@@ -122,6 +122,18 @@ def get_latest_messages(channel):
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
         posts = soup.find_all("div", class_="etme_widget_message")
+
+        # ---- DEBUG: یه پست عکس‌دار رو کامل چاپ می‌کنه ----
+        for p in posts[-LIMIT:]:
+            if "photo" in str(p).lower():
+                print("---DEBUG PHOTO POST START---")
+                print(str(p)[:2500])
+                print("---DEBUG PHOTO POST END---")
+                break
+        else:
+            print("---DEBUG: هیچ پستی با کلمه‌ی photo در HTML پیدا نشد---")
+        # ---- پایان DEBUG ----
+
         messages = [parse_post(post, channel) for post in posts[-LIMIT:]]
         return [m for m in messages if m["text"].strip() or m["photos"] or m["videos"]
                 or m["gifs"] or m["stickers"] or m["documents"]]
